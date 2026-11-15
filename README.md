@@ -1,80 +1,96 @@
-# KDE Connect - desktop app
+# KDE Connect mit Bildschirmspiegelung (Fork)
 
-KDE Connect is a multi-platform app that allows your devices to communicate (eg: your phone and your computer).
+Dieser Fork von [KDE Connect](https://invent.kde.org/network/kdeconnect-kde) (Desktop-App) ergänzt ein Plugin **Bildschirmspiegelung**: Bildschirm und Ton eines Android-Geräts erscheinen in einem Fenster auf dem PC, das Gerät lässt sich dort mit Maus und Tastatur bedienen. Die Arbeit erledigt [scrcpy](https://github.com/Genymobile/scrcpy) über „Debugging über WLAN“ (Android 11 und neuer).
 
-## (Some) Features
-- **Shared clipboard**: copy and paste between your phone and your computer (or any other device).
-- **Notification sync**: Read and reply to your Android notifications from the desktop.
-- **Share files and URLs** instantly from one device to another including some filesystem integration.
-- **Multimedia remote control**: Use your phone as a remote for Linux media players.
-- **Virtual touchpad**: Use your phone screen as your computer's touchpad and keyboard.
-- **Presentation remote**: Advance your presentation slides straight from your phone.
-- **Run Commands**: Run shell commands on your computer from your phone.
-- **Access SMS**: Read, send and reply to SMS and MMS from your computer.
+Alle anderen Funktionen entsprechen dem Original. Auf dem Handy wird die normale KDE-Connect-App aus [F-Droid](https://f-droid.org/packages/org.kde.kdeconnect_tp/) oder dem [Play Store](https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp) benutzt, sie muss nicht verändert werden.
 
-All this is done completely wirelessly, utilising TLS encryption.
+Die Änderungen liegen auf dem Branch `screenmirror`.
 
-## Userbase wiki
-A user-focused wiki can be found on [KDE Userbase](https://userbase.kde.org/KDEConnect)
+## Voraussetzungen
 
-## Supported platforms
-- Computers running Linux with Plasma, GNOME, elementary OS… any distro with Qt 6 support :)
-- Android, by installing the KDE Connect app from the [Play Store](https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp) or [F-Droid](https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp).
-- iPhone and iPad, by installing from the [App Store](https://apps.apple.com/us/app/kde-connect/id1580245991)
-- Computers running Windows, by installing from the [Microsoft Store](https://apps.microsoft.com/store/detail/kde-connect/9N93MRMSXBF0)
+- Android 11 oder neuer (Ton ebenfalls ab Android 11), mit eingeschalteten Entwickleroptionen
+- Handy und PC im selben Netzwerk und in KDE Connect gekoppelt
+- Auf dem PC: `scrcpy` und `adb` (Android Platform Tools)
+  - Linux: Pakete `scrcpy` und `android-tools` bzw. `adb` der Distribution
+  - Windows: die [scrcpy-Release](https://github.com/Genymobile/scrcpy/releases) entpacken; das mitgelieferte `adb.exe` wird automatisch gefunden. Den Pfad zu `scrcpy.exe` in den Plugin-Einstellungen eintragen, falls er nicht im `PATH` liegt.
 
-## How to install
-These instructions explain how to install KDE Connect on your computer. You will also need to install it on your Android device and pair them together in the app before using this application. The Android app repository can be found [here](https://invent.kde.org/network/kdeconnect-android)
+## Bauen
 
-### On Linux
-Look in your distribution repo for a package called `kdeconnect-kde`,
-`kdeconnect-plasma`, just `kdeconnect` or `kde-connect`.
-If it's not there and you know how to build software from sources, you just
-found the repo :), instructions are
-[here](https://community.kde.org/KDEConnect#Linux_Desktop)
+### Linux
 
-### On Mac or Windows
-Platforms other than Linux are not officially supported, as there has yet to be an official release of KDE Connect for MacOS or Windows. However, most of the features have already been ported to windows so you can compile KDE Connect for Windows using [Craft](https://community.kde.org/Craft). It hasn't yet been completely tested on MacOS, contributions and feedback are welcome!
+Benötigt Qt ab 6.9 und KDE Frameworks 6 samt Entwicklungspaketen.
 
-### On BSD
-It should work, but no promises :)
-
-
-## How does it work?
-KDE Connect consists of a UI-agnostic "core" library that exposes a series of DBus interfaces, and several UI components that consume these DBus interfaces. This way, new UI components can be added to integrate better with specific platforms or desktops, without having to reimplement the protocol or any of the internals. The core KDE Connect library is also divided into 4 big blocks:
-
-- **LinkProviders**: Are in charge of discovering other KDE Connect-enabled devices in the network and establishing a Link to them.
-- **Devices**: Represent a remote device, abstracting the specific Link that is being used to reach it.
-- **NetworkPackets**: JSON-serializable and self-contained pieces of information to be sent by the plugins between devices.
-- **Plugins**: Independent pieces of code that implement a specific feature. Plugins will use NetworkPackets to exchange information through the network with other Plugins on a remote Device.
-
-The basic structure of a NetworkPacket is the following:
-
-```json
-{
-  "id": 123456789,
-  "type": "com.example.myplugin",
-  "body": {  },
-  "version": 5
-}
+```sh
+git clone -b screenmirror https://github.com/Pauls-Slop/kdeconnect-kde.git
+cmake -S kdeconnect-kde -B build -DCMAKE_INSTALL_PREFIX=/usr
+cmake --build build
+sudo cmake --install build
+pkill kdeconnectd; kdeconnectd &
 ```
 
-The content of the `"body"` section is defined by each Plugin. Hence, only the emitter and receiver plugins of a given packet type need agree on the contents of the body.
+Die eigenen Tests laufen mit `ctest --test-dir build -R screenmirror`.
 
-NetworkPackets can also have binary data attached that can't be serialized to JSON. In this case, two new fields will be added:
+### Windows
 
-`"payloadSize"`: The size of the file, or -1 if it is a stream without known size.
-`"payloadTransferInfo"`: Another JSON object where the specific Link can add information so the Link in the remote end can establish a connection and receive the payload (eg: IP and port in a local network). It's up to the Link implementation to decide how to use this field.
+Mit [KDE Craft](https://community.kde.org/Craft) bauen und dabei die Quellen auf diesen Fork und den Branch `screenmirror` umstellen. Der Windows-Build ist bisher ungetestet.
 
-## Contributing
+## Benutzung
 
-To contribute patches, use [KDE Connect's GitLab](https://invent.kde.org/network/kdeconnect-kde). There you can also find a task list with stuff to do and links to other relevant resources. It is a good idea to also subscribe to the [KDE Connect mailing list](https://mail.kde.org/mailman/listinfo/kdeconnect). We can also be reached on IRC at #kdeconnect on irc.libera.chat or on [Telegram](https://t.me/joinchat/AOS6gA37orb2dZCLhqbZjg), contributions and feedback are warmly welcomed.
+1. **Plugin aktivieren:** In der KDE-Connect-App das Gerät öffnen, Einstellungen > Plugins > „Bildschirmspiegelung“ einschalten. Das Plugin ist standardmäßig aus und wird nur für Handys und Tablets angeboten.
+2. **Einmalig koppeln:** Auf dem Handy Einstellungen > Entwickleroptionen > Debugging über WLAN einschalten und „Gerät über Kopplungscode koppeln“ antippen. Den sechsstelligen Code in den Plugin-Einstellungen eingeben und „Koppeln“ klicken. Der Port wird automatisch erkannt.
+3. **Spiegeln:** „Debugging über WLAN“ einschalten (am schnellsten über eine Schnelleinstellungs-Kachel, die sich in den Entwickleroptionen hinzufügen lässt) und dann in der KDE-Connect-App „Bildschirm spiegeln“ wählen oder im Plasma-Applet auf das Bildschirm-Symbol klicken. Fenster schließen oder erneut klicken beendet die Sitzung.
 
-For bug reporting, please use [KDE's Bugzilla](https://bugs.kde.org). Please do not use the issue tracker in GitLab since we want to keep everything in one place.
+### Einstellungen
 
-Please know that all translations for all KDE apps are handled by the [localization team](https://l10n.kde.org/). If you would like to submit a translation, that should be done by working with the proper team for that language.
+| Einstellung | Standard | Bedeutung |
+|---|---|---|
+| Debugging über WLAN nach der Sitzung ausschalten | an | Schaltet die Funktion auf dem Handy nach jeder Sitzung wieder ab |
+| Steuerung mit Maus und Tastatur erlauben | an | Aus = reines Ansehen |
+| Ton übertragen | an | Gerätesound läuft über den PC |
+| Gerätebildschirm ausschalten / wach halten | aus | Nur mit Steuerung möglich |
+| Maximale Auflösung, Video-Bitrate | Original, Standard | Für langsamere Netzwerke |
+| Pfade zu scrcpy und adb | PATH | Nur nötig, wenn nicht im PATH |
 
-## License
-[GNU GPL v2](https://www.gnu.org/licenses/gpl-2.0.html) and [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
+## Sicherheit
 
-If you are reading this from Github, you should know that this is just a mirror of the [KDE Project repo](https://invent.kde.org/network/kdeconnect-kde).
+ADB-Zugriff entspricht einer Shell auf dem Gerät. Das Plugin hält diesen Zugriff deshalb so klein wie möglich:
+
+- Nur verschlüsseltes Debugging über WLAN mit Kopplungscode; der ungeschützte Modus `adb tcpip 5555` wird nie verwendet.
+- Debugging über WLAN wird nach jeder Sitzung auf dem Gerät abgeschaltet, das Gerät ist dann nicht mehr per ADB erreichbar.
+- Jede Sitzung startet einen eigenen adb-Server auf einem zufälligen Port, der nur lokal erreichbar ist und danach beendet wird. Ein adb für Entwicklungszwecke wird nicht berührt.
+- Unter Linux und macOS bekommt jedes Gerät einen eigenen adb-Schlüssel in `~/.local/share/kdeconnect/screenmirror/<Geräte-ID>`, lesbar nur für den eigenen Benutzer. „Kopplung entfernen“ löscht ihn. Unter Windows nutzt adb immer den Schlüssel im Benutzerprofil.
+- Verbunden wird nur mit der IP-Adresse, unter der KDE Connect das Gerät kennt; mDNS-Ankündigungen anderer Adressen und automatisches Verbinden werden ignoriert. Das Gerätezertifikat wird beim Koppeln festgehalten.
+- Der Kopplungscode wird über die Standardeingabe übergeben und erscheint nicht in der Prozessliste.
+
+Restrisiken: Während einer Sitzung können andere Benutzerkonten auf demselben PC den lokalen adb-Server erreichen. In den Entwickleroptionen sollte „Zeitlimit für ADB-Autorisierung deaktivieren“ ausgeschaltet bleiben, damit Android ungenutzte Freigaben nach 7 Tagen entzieht. Um den Zugriff ganz zu entziehen, den PC zusätzlich auf dem Handy unter „Debugging über WLAN > Gekoppelte Geräte“ entfernen.
+
+Details stehen in [`plugins/screenmirror/README`](plugins/screenmirror/README).
+
+## Fehlersuche
+
+- **„Das Gerät wurde nicht gefunden“:** Debugging über WLAN ist auf dem Handy aus, oder Handy und PC sind in verschiedenen Netzen. Manche Router blockieren mDNS zwischen WLAN und LAN.
+- **„Das Gerät bietet keine Kopplung an“:** Auf dem Handy muss der Dialog „Gerät über Kopplungscode koppeln“ geöffnet sein, solange auf „Koppeln“ geklickt wird. Alternativ den angezeigten Port von Hand eintragen.
+- **„Das Gerät hat die Verbindung abgelehnt“:** Kopplung entfernen und neu koppeln.
+- Ausführliches Log:
+  ```sh
+  QT_LOGGING_RULES="kdeconnect.plugin.screenmirror.debug=true" kdeconnectd
+  ```
+
+## Aufbau des Patches
+
+| Pfad | Inhalt |
+|---|---|
+| `plugins/screenmirror/` | Plugin, adb/scrcpy-Steuerung (`adbsession`), Hilfsfunktionen (`adbtools`), Einstellungsseite |
+| `dbusinterfaces/`, `declarativeplugin/` | D-Bus- und QML-Anbindung |
+| `app/qml/DevicePage.qml` | Aktion „Bildschirm spiegeln“ in der App |
+| `plasmoid/package/contents/ui/` | Schalter im Plasma-Applet |
+| `tests/screenmirror*` | Tests mit simuliertem adb und scrcpy |
+| `po/de/` | Deutsche Übersetzungen |
+
+## Upstream
+
+Das Original wird auf [invent.kde.org](https://invent.kde.org/network/kdeconnect-kde) entwickelt. Dieser Fork ist kein offizieller Teil von KDE Connect; Fehler im Plugin bitte hier melden, nicht bei KDE.
+
+## Lizenz
+
+[GNU GPL v2](https://www.gnu.org/licenses/gpl-2.0.html) und [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html), wie das Original.
