@@ -51,10 +51,18 @@ jobs:
           $boot = Join-Path $env:RUNNER_TEMP 'craftboot'
           New-Item -ItemType Directory -Force $boot | Out-Null
           Invoke-WebRequest https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile "$boot\CraftBootstrap.py"
+          # The runner image has the Android SDK preinstalled. With ANDROID_SDK_ROOT and
+          # ANDROID_NDK set, the bootstrap assumes an Android build and switches to
+          # MinSizeRel, which the KDE binary cache does not provide for Windows, so
+          # everything would be built from source.
+          Remove-Item Env:ANDROID_SDK_ROOT, Env:ANDROID_NDK -ErrorAction SilentlyContinue
           # Defaults: MSVC 2022, x86_64, short path C:\_.
           # The bootstrap refuses a non-empty prefix, except for the download folder.
           python "$boot\CraftBootstrap.py" --prefix $env:CRAFT_ROOT --use-defaults
           if ($LASTEXITCODE -ne 0) { throw "Craft bootstrap failed ($LASTEXITCODE)" }
+          $settings = Get-Content "$env:CRAFT_ROOT\etc\CraftSettings.ini"
+          $settings | Select-String '^(ABI|BuildType) ='
+          if (-not ($settings | Select-String '^BuildType = RelWithDebInfo$')) { throw "Unexpected Craft build type, the binary cache would not be used" }
 
       - name: Use this checkout as kdeconnect-kde source
         run: |
