@@ -81,6 +81,36 @@ PlasmaComponents.ItemDelegate {
         device: root.device
     }
 
+    ScreenMirror {
+        id: screenmirror
+        device: root.device
+    }
+
+    property bool screenMirrorRequested: false
+
+    // Errors of the screen mirroring plugin may happen after the request returned
+    Connections {
+        target: screenmirror.plugin
+        function onStateChangedProxy() {
+            if (!root.screenMirrorRequested || screenmirror.plugin.busy) {
+                return;
+            }
+            root.screenMirrorRequested = false;
+            if (!screenmirror.plugin.active && screenmirror.plugin.lastError.length > 0) {
+                screenMirrorPrompt.subtitle = screenmirror.plugin.lastError;
+                screenMirrorPrompt.visible = true;
+            }
+        }
+    }
+
+    Kirigami.PromptDialog {
+        id: screenMirrorPrompt
+        visible: false
+        showCloseButton: true
+        standardButtons: Kirigami.Dialog.NoButton
+        title: i18n("Screen mirroring failed")
+    }
+
     Kirigami.PromptDialog {
         id: prompt
         visible: false
@@ -191,7 +221,7 @@ PlasmaComponents.ItemDelegate {
                 z: -1  // Behind content so it doesn't block interactions
                 
                 // Show only when hovering empty space (not hovering any interactive buttons)
-                active: deviceHeaderContainer.hovered && !overflowMenu.hovered && !virtualMonitorButton.hovered && !dismissAllButton.hovered
+                active: deviceHeaderContainer.hovered && !overflowMenu.hovered && !virtualMonitorButton.hovered && !screenMirrorButton.hovered && !dismissAllButton.hovered
                 mainText: i18n("File Transfer")
                 subText: i18n("Drop a file to transfer it onto your phone.")
             }
@@ -245,6 +275,33 @@ PlasmaComponents.ItemDelegate {
                                 virtualmonitor.plugin.requestVirtualMonitor();
                                 prompt.subtitle = virtualmonitor.plugin.lastError;
                                 prompt.visible = prompt.subtitle.length > 0;
+                            }
+                        }
+                    }
+
+                    // Screen mirroring
+                    PlasmaComponents.ToolButton {
+                        id: screenMirrorButton
+                        icon.name: "video-display"
+                        icon.width: Kirigami.Units.iconSizes.small
+                        icon.height: Kirigami.Units.iconSizes.small
+                        visible: screenmirror.available
+                        display: PlasmaComponents.AbstractButton.IconOnly
+                        checked: visible && (!!screenmirror.plugin?.active || !!screenmirror.plugin?.busy)
+                        checkable: true
+
+                        hoverEnabled: true
+                        PlasmaComponents.ToolTip.text: checked ? i18n("Stop screen mirroring") : i18n("Mirror screen")
+
+                        onClicked: {
+                            screenMirrorPrompt.visible = false;
+                            if (screenmirror.plugin.active || screenmirror.plugin.busy) {
+                                screenmirror.plugin.stop();
+                            } else if (screenmirror.plugin.startMirroring()) {
+                                root.screenMirrorRequested = true;
+                            } else {
+                                screenMirrorPrompt.subtitle = screenmirror.plugin.lastError;
+                                screenMirrorPrompt.visible = true;
                             }
                         }
                     }

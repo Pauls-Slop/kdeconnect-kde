@@ -692,3 +692,179 @@ msgstr "Ohne Auflösung kann keine Anforderung begonnen werden"
 
 #~ msgid "Open destination folder"
 #~ msgstr "Zielordner öffnen"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Another operation is still in progress."
+msgstr "Ein anderer Vorgang läuft noch."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Could not connect to the device: %1"
+msgstr "Verbindung zum Gerät fehlgeschlagen: %1"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Could not find a free local port for adb."
+msgstr "Es wurde kein freier lokaler Port für adb gefunden."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Could not start adb: %1"
+msgstr "adb konnte nicht gestartet werden: %1"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Could not start scrcpy: %1"
+msgstr "scrcpy konnte nicht gestartet werden: %1"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Invalid port."
+msgstr "Ungültiger Port."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pairing failed: %1"
+msgstr "Kopplung fehlgeschlagen: %1"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Screen mirroring is only supported for Android phones and tablets."
+msgstr "Bildschirmspiegelung wird nur für Android-Smartphones und -Tablets unterstützt."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The device could not be found. Make sure \"Wireless debugging\" is enabled on the device."
+msgstr "Das Gerät wurde nicht gefunden. Stellen Sie sicher, dass auf dem Gerät „Debugging über WLAN“ eingeschaltet ist."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The device did not accept the connection. Try pairing again."
+msgstr "Das Gerät hat die Verbindung abgelehnt. Koppeln Sie es erneut."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The device does not offer pairing. On the device, open \"Wireless debugging\" and tap \"Pair device with pairing code\"."
+msgstr "Das Gerät bietet keine Kopplung an. Öffnen Sie auf dem Gerät „Debugging über WLAN“ und tippen Sie auf „Gerät über Kopplungscode koppeln“."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The device is not connected over the local network."
+msgstr "Das Gerät ist nicht über das lokale Netzwerk verbunden."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The device is not paired for screen mirroring yet. Pair it in the plugin settings first."
+msgstr "Das Gerät ist noch nicht für die Bildschirmspiegelung gekoppelt. Koppeln Sie es zuerst in den Moduleinstellungen."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "The pairing code must consist of six digits."
+msgstr "Der Kopplungscode muss aus sechs Ziffern bestehen."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "adb was not found. Please install the Android platform tools or set the path in the plugin settings."
+msgstr "adb wurde nicht gefunden. Installieren Sie die Android Platform Tools oder geben Sie den Pfad in den Moduleinstellungen an."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "scrcpy stopped unexpectedly: %1"
+msgstr "scrcpy wurde unerwartet beendet: %1"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "scrcpy was not found. Please install it or set its path in the plugin settings."
+msgstr "scrcpy wurde nicht gefunden. Installieren Sie es oder geben Sie den Pfad in den Moduleinstellungen an."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Allow controlling the device with mouse and keyboard"
+msgstr "Steuerung des Geräts mit Maus und Tastatur erlauben"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Default"
+msgstr "Standard"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Detect automatically"
+msgstr "Automatisch erkennen"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Forget pairing"
+msgstr "Kopplung entfernen"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Forward audio (Android 11 or newer)"
+msgstr "Ton übertragen (ab Android 11)"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Keep the device awake while mirroring"
+msgstr "Gerät während der Spiegelung wach halten"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Maximum resolution:"
+msgstr "Maximale Auflösung:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Not paired"
+msgstr "Nicht gekoppelt"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "On the device, open Settings > Developer options > Wireless debugging, enable it and tap \"Pair device with pairing code\". Then enter the six digit code here."
+msgstr "Öffnen Sie auf dem Gerät Einstellungen > Entwickleroptionen > Debugging über WLAN, schalten Sie es ein und tippen Sie auf „Gerät über Kopplungscode koppeln“. Geben Sie dann hier den sechsstelligen Code ein."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Original"
+msgstr "Original"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pair"
+msgstr "Koppeln"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Paired"
+msgstr "Gekoppelt"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pairing"
+msgstr "Kopplung"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pairing code:"
+msgstr "Kopplungscode:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pairing port:"
+msgstr "Kopplungs-Port:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Pairing..."
+msgstr "Wird gekoppelt …"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Programs"
+msgstr "Programme"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Search in PATH"
+msgstr "Im PATH suchen"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Security"
+msgstr "Sicherheit"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Session"
+msgstr "Sitzung"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Status:"
+msgstr "Status:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "To fully revoke access, also remove this computer under \"Wireless debugging > Paired devices\" on the device."
+msgstr "Um den Zugriff vollständig zu entziehen, entfernen Sie diesen Computer auch auf dem Gerät unter „Debugging über WLAN > Gekoppelte Geräte“."
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Turn off wireless debugging on the device when the session ends"
+msgstr "Debugging über WLAN auf dem Gerät nach der Sitzung ausschalten"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Turn the device screen off while mirroring"
+msgstr "Gerätebildschirm während der Spiegelung ausschalten"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "Video bit rate:"
+msgstr "Video-Bitrate:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "adb:"
+msgstr "adb:"
+
+#: screenmirror/screenmirrorplugin.cpp
+msgid "scrcpy:"
+msgstr "scrcpy:"

@@ -24,6 +24,12 @@ target_sources(sendfiletest PRIVATE testdevice.cpp)
 ecm_add_test(smshelpertest.cpp LINK_LIBRARIES ${kdeconnect_libraries})
 ecm_add_test(lanratelimittest.cpp LINK_LIBRARIES ${kdeconnect_libraries})
 ecm_add_test(lanipv6test.cpp LINK_LIBRARIES ${kdeconnect_libraries})
+ecm_add_test(screenmirroradbtoolstest.cpp ../plugins/screenmirror/adbtools.cpp TEST_NAME screenmirroradbtoolstest LINK_LIBRARIES Qt::Core Qt::Network Qt::Test)
+if (UNIX)
+    # Uses shell scripts as fake adb and scrcpy
+    ecm_add_test(screenmirrorsessiontest.cpp ../plugins/screenmirror/adbsession.cpp ../plugins/screenmirror/adbtools.cpp
+        TEST_NAME screenmirrorsessiontest LINK_LIBRARIES Qt::Core Qt::Network Qt::Test KF6::I18n)
+endif()
 if (WIN32 OR APPLE)
     ecm_add_test(mdnstest.cpp LINK_LIBRARIES ${kdeconnect_libraries})
 endif()

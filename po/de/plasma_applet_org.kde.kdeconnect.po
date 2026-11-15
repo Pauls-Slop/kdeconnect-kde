@@ -232,3 +232,15 @@ msgstr "Einstellungen von KDE Connect …"
 
 #~ msgid "Discharging: %1%"
 #~ msgstr "Wird entladen: %1 %"
+
+#: package/contents/ui/DeviceDelegate.qml
+msgid "Screen mirroring failed"
+msgstr "Bildschirmspiegelung fehlgeschlagen"
+
+#: package/contents/ui/DeviceDelegate.qml
+msgid "Stop screen mirroring"
+msgstr "Bildschirmspiegelung beenden"
+
+#: package/contents/ui/DeviceDelegate.qml
+msgid "Mirror screen"
+msgstr "Bildschirm spiegeln"

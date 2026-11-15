@@ -28,6 +28,7 @@
 #include "generated/shareinterface.h"
 #include "generated/smsinterface.h"
 #include "generated/virtualmonitorinterface.h"
+#include "generated/screenmirrorinterface.h"
 
 /**
  * Using these "proxy" classes just in case we need to rename the
@@ -250,6 +251,21 @@ public:
     explicit VirtualmonitorDbusInterface(const QString &deviceId, QObject *parent = nullptr);
 Q_SIGNALS:
     void activeChanged();
+};
+
+class KDECONNECTDBUSINTERFACES_EXPORT ScreenmirrorDbusInterface : public OrgKdeKdeconnectDeviceScreenmirrorInterface
+{
+    Q_OBJECT
+    // Workaround because qdbusxml2cpp is not generating NOTIFY for properties
+    Q_PROPERTY(bool available READ available NOTIFY stateChangedProxy)
+    Q_PROPERTY(bool paired READ paired NOTIFY stateChangedProxy)
+    Q_PROPERTY(bool active READ active NOTIFY stateChangedProxy)
+    Q_PROPERTY(bool busy READ busy NOTIFY stateChangedProxy)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY stateChangedProxy)
+public:
+    explicit ScreenmirrorDbusInterface(const QString &deviceId, QObject *parent = nullptr);
+Q_SIGNALS:
+    void stateChangedProxy();
 };
 
 class KDECONNECTDBUSINTERFACES_EXPORT ClipboardDbusInterface : public OrgKdeKdeconnectDeviceClipboardInterface

@@ -543,3 +543,15 @@ msgstr "Apple Store"
 
 #~ msgid "Find devices..."
 #~ msgstr "Geräte suchen ..."
+
+#: qml/DevicePage.qml
+msgid "Stop screen mirroring"
+msgstr "Bildschirmspiegelung beenden"
+
+#: qml/DevicePage.qml
+msgid "Connecting to device..."
+msgstr "Verbindung zum Gerät wird hergestellt …"
+
+#: qml/DevicePage.qml
+msgid "Mirror screen"
+msgstr "Bildschirm spiegeln"

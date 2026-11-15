@@ -1,0 +1,19 @@
+{
+    "$schema": "../kdeconnect.schema.json",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Pauls-Slop"
+            }
+        ],
+        "Description": "Mirror the screen and audio of an Android device using scrcpy over wireless debugging",
+        "Description[de]": "Bildschirm und Ton eines Android-Geräts per scrcpy über „Debugging über WLAN“ spiegeln",
+        "EnabledByDefault": false,
+        "Icon": "video-display",
+        "License": "GPL",
+        "Name": "Screen Mirroring",
+        "Name[de]": "Bildschirmspiegelung"
+    },
+    "X-KdeConnect-OutgoingPacketType": [],
+    "X-KdeConnect-SupportedPacketType": []
+}

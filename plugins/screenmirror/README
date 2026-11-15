@@ -1,0 +1,50 @@
+Screen mirroring plugin
+
+Mirrors the screen and audio of an Android phone or tablet in a window on the
+desktop and allows controlling it with mouse and keyboard. The heavy lifting is
+done by scrcpy (https://github.com/Genymobile/scrcpy), which is started over
+Android 11+ wireless debugging. Audio forwarding needs Android 11 or newer.
+Nothing has to be installed on the device besides KDE Connect.
+
+Requirements on the desktop: scrcpy and adb (Android platform tools). On
+Windows the adb.exe that comes with the scrcpy release is used automatically.
+
+Usage
+1. Enable the plugin for the device.
+2. On the device: Settings > Developer options > Wireless debugging, enable it,
+   tap "Pair device with pairing code" and enter the code in the plugin
+   settings. This is needed only once.
+3. Start mirroring from the device page or the Plasma applet. Wireless
+   debugging has to be enabled on the device for that; the "Wireless
+   debugging" quick settings tile (Developer options > Quick settings
+   developer tiles) makes this one tap.
+
+Security model
+adb access is equivalent to a shell on the device, so the plugin tries to keep
+it as narrow as possible:
+
+- Only TLS based wireless debugging (Android 11+) with explicit pairing is
+  used. The legacy unauthenticated "adb tcpip 5555" mode is never enabled.
+- The plugin is disabled by default and only offered for phones and tablets.
+- Each session uses its own adb server on a random port, bound to 127.0.0.1,
+  that is killed when the session ends. It is independent of any adb server
+  used by development tools.
+- On Linux and macOS every device gets its own adb key, stored in
+  ~/.local/share/kdeconnect/screenmirror/<device id>/.android with owner-only
+  permissions. Forgetting the pairing deletes the key. On Windows adb always
+  uses the key in the user profile.
+- The device is only contacted at the IP address of the authenticated KDE
+  Connect link. mDNS announcements from other addresses are ignored, and mDNS
+  auto-connect is disabled. The device certificate is pinned by adb during
+  pairing, so a spoofed announcement can not make adb talk to another device.
+- The pairing code is passed to adb on stdin, so it does not show up in the
+  process list.
+- By default wireless debugging is turned off on the device when the session
+  ends (settings put global adb_wifi_enabled 0), so it is only reachable while
+  a session is running. This can be disabled in the plugin settings.
+- Control of the device can be disabled to get a view-only mirror.
+
+Remaining risks: while a session is running, other local users on the same
+computer can reach the loopback adb server. Android revokes debugging
+authorizations that are unused for 7 days unless "Disable adb authorization
+timeout" is enabled in the developer options; keep it disabled.
