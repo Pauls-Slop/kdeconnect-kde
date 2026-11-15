@@ -1,22 +1,22 @@
-# KDE Connect mit Bildschirmspiegelung (Fork)
+# KDE Connect with screen mirroring (fork)
 
-Dieser Fork von [KDE Connect](https://invent.kde.org/network/kdeconnect-kde) (Desktop-App) ergänzt ein Plugin **Bildschirmspiegelung**: Bildschirm und Ton eines Android-Geräts erscheinen in einem Fenster auf dem PC, das Gerät lässt sich dort mit Maus und Tastatur bedienen. Die Arbeit erledigt [scrcpy](https://github.com/Genymobile/scrcpy) über „Debugging über WLAN“ (Android 11 und neuer).
+This fork of the [KDE Connect desktop app](https://invent.kde.org/network/kdeconnect-kde) adds a **Screen Mirroring** plugin: the screen and audio of an Android device are shown in a window on the computer, and the device can be controlled with mouse and keyboard. The heavy lifting is done by [scrcpy](https://github.com/Genymobile/scrcpy) over wireless debugging (Android 11 and newer).
 
-Alle anderen Funktionen entsprechen dem Original. Auf dem Handy wird die normale KDE-Connect-App aus [F-Droid](https://f-droid.org/packages/org.kde.kdeconnect_tp/) oder dem [Play Store](https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp) benutzt, sie muss nicht verändert werden.
+Everything else is identical to upstream. On the phone the regular KDE Connect app from [F-Droid](https://f-droid.org/packages/org.kde.kdeconnect_tp/) or the [Play Store](https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp) is used; it does not need to be modified.
 
-## Voraussetzungen
+## Requirements
 
-- Android 11 oder neuer (Ton ebenfalls ab Android 11), mit eingeschalteten Entwickleroptionen
-- Handy und PC im selben Netzwerk und in KDE Connect gekoppelt
-- Auf dem PC: `scrcpy` und `adb` (Android Platform Tools)
-  - Linux: Pakete `scrcpy` und `android-tools` bzw. `adb` der Distribution
-  - Windows: die [scrcpy-Release](https://github.com/Genymobile/scrcpy/releases) entpacken; das mitgelieferte `adb.exe` wird automatisch gefunden. Den Pfad zu `scrcpy.exe` in den Plugin-Einstellungen eintragen, falls er nicht im `PATH` liegt.
+- Android 11 or newer with developer options enabled
+- Phone and computer on the same network and paired in KDE Connect
+- On the computer: `scrcpy` and `adb` (Android platform tools)
+  - Linux: the `scrcpy` and `android-tools`/`adb` packages of your distribution
+  - Windows: extract the [scrcpy release](https://github.com/Genymobile/scrcpy/releases); the bundled `adb.exe` is found automatically. Set the path to `scrcpy.exe` in the plugin settings if it is not in `PATH`.
 
-## Bauen
+## Building
 
 ### Linux
 
-Benötigt Qt ab 6.9 und KDE Frameworks 6 samt Entwicklungspaketen.
+Requires Qt 6.9 or newer and KDE Frameworks 6 including development packages.
 
 ```sh
 git clone https://github.com/Pauls-Slop/kdeconnect-kde.git
@@ -26,69 +26,69 @@ sudo cmake --install build
 pkill kdeconnectd; kdeconnectd &
 ```
 
-Die eigenen Tests laufen mit `ctest --test-dir build -R screenmirror`.
+The plugin's tests run with `ctest --test-dir build -R screenmirror`.
 
 ### Windows
 
-Mit [KDE Craft](https://community.kde.org/Craft) bauen und dabei die Quellen auf diesen Fork umstellen. Der Windows-Build ist bisher ungetestet.
+Build with [KDE Craft](https://community.kde.org/Craft), pointing the sources to this fork. The Windows build has not been tested yet.
 
-## Benutzung
+## Usage
 
-1. **Plugin aktivieren:** In der KDE-Connect-App das Gerät öffnen, Einstellungen > Plugins > „Bildschirmspiegelung“ einschalten. Das Plugin ist standardmäßig aus und wird nur für Handys und Tablets angeboten.
-2. **Einmalig koppeln:** Auf dem Handy Einstellungen > Entwickleroptionen > Debugging über WLAN einschalten und „Gerät über Kopplungscode koppeln“ antippen. Den sechsstelligen Code in den Plugin-Einstellungen eingeben und „Koppeln“ klicken. Der Port wird automatisch erkannt.
-3. **Spiegeln:** „Debugging über WLAN“ einschalten (am schnellsten über eine Schnelleinstellungs-Kachel, die sich in den Entwickleroptionen hinzufügen lässt) und dann in der KDE-Connect-App „Bildschirm spiegeln“ wählen oder im Plasma-Applet auf das Bildschirm-Symbol klicken. Fenster schließen oder erneut klicken beendet die Sitzung.
+1. **Enable the plugin:** In the KDE Connect app open the device, go to Settings > Plugins and enable "Screen Mirroring". The plugin is disabled by default and only offered for phones and tablets.
+2. **Pair once:** On the phone open Settings > Developer options > Wireless debugging, enable it and tap "Pair device with pairing code". Enter the six digit code in the plugin settings and click "Pair". The port is detected automatically.
+3. **Mirror:** Enable wireless debugging (quickest via a quick settings tile, which can be added in the developer options), then choose "Mirror screen" in the KDE Connect app or click the screen icon in the Plasma applet. Closing the window or clicking again ends the session.
 
-### Einstellungen
+### Settings
 
-| Einstellung | Standard | Bedeutung |
+| Setting | Default | Meaning |
 |---|---|---|
-| Debugging über WLAN nach der Sitzung ausschalten | an | Schaltet die Funktion auf dem Handy nach jeder Sitzung wieder ab |
-| Steuerung mit Maus und Tastatur erlauben | an | Aus = reines Ansehen |
-| Ton übertragen | an | Gerätesound läuft über den PC |
-| Gerätebildschirm ausschalten / wach halten | aus | Nur mit Steuerung möglich |
-| Maximale Auflösung, Video-Bitrate | Original, Standard | Für langsamere Netzwerke |
-| Pfade zu scrcpy und adb | PATH | Nur nötig, wenn nicht im PATH |
+| Turn off wireless debugging when the session ends | on | Disables wireless debugging on the device after every session |
+| Allow controlling the device with mouse and keyboard | on | Off = view only |
+| Forward audio | on | Device audio plays on the computer |
+| Turn the device screen off / keep it awake | off | Only available with control enabled |
+| Maximum resolution, video bit rate | original, default | For slower networks |
+| Paths to scrcpy and adb | PATH | Only needed if not in PATH |
 
-## Sicherheit
+## Security
 
-ADB-Zugriff entspricht einer Shell auf dem Gerät. Das Plugin hält diesen Zugriff deshalb so klein wie möglich:
+adb access equals a shell on the device, so the plugin keeps it as narrow as possible:
 
-- Nur verschlüsseltes Debugging über WLAN mit Kopplungscode; der ungeschützte Modus `adb tcpip 5555` wird nie verwendet.
-- Debugging über WLAN wird nach jeder Sitzung auf dem Gerät abgeschaltet, das Gerät ist dann nicht mehr per ADB erreichbar.
-- Jede Sitzung startet einen eigenen adb-Server auf einem zufälligen Port, der nur lokal erreichbar ist und danach beendet wird. Ein adb für Entwicklungszwecke wird nicht berührt.
-- Unter Linux und macOS bekommt jedes Gerät einen eigenen adb-Schlüssel in `~/.local/share/kdeconnect/screenmirror/<Geräte-ID>`, lesbar nur für den eigenen Benutzer. „Kopplung entfernen“ löscht ihn. Unter Windows nutzt adb immer den Schlüssel im Benutzerprofil.
-- Verbunden wird nur mit der IP-Adresse, unter der KDE Connect das Gerät kennt; mDNS-Ankündigungen anderer Adressen und automatisches Verbinden werden ignoriert. Das Gerätezertifikat wird beim Koppeln festgehalten.
-- Der Kopplungscode wird über die Standardeingabe übergeben und erscheint nicht in der Prozessliste.
+- Only encrypted wireless debugging with a pairing code; the unauthenticated `adb tcpip 5555` mode is never used.
+- Wireless debugging is turned off on the device after every session, so the device is no longer reachable via adb.
+- Every session starts its own adb server on a random port that is only reachable locally and is killed afterwards. An adb server used for development is not touched.
+- On Linux and macOS each device gets its own adb key in `~/.local/share/kdeconnect/screenmirror/<device id>`, readable only by your user. "Forget pairing" deletes it. On Windows adb always uses the key in the user profile.
+- Only the IP address under which KDE Connect knows the device is contacted; mDNS announcements from other addresses are ignored and auto-connect is disabled. The device certificate is pinned during pairing.
+- The pairing code is passed on stdin and does not show up in the process list.
 
-Restrisiken: Während einer Sitzung können andere Benutzerkonten auf demselben PC den lokalen adb-Server erreichen. In den Entwickleroptionen sollte „Zeitlimit für ADB-Autorisierung deaktivieren“ ausgeschaltet bleiben, damit Android ungenutzte Freigaben nach 7 Tagen entzieht. Um den Zugriff ganz zu entziehen, den PC zusätzlich auf dem Handy unter „Debugging über WLAN > Gekoppelte Geräte“ entfernen.
+Remaining risks: while a session is running, other user accounts on the same computer can reach the local adb server. Keep "Disable adb authorization timeout" off in the developer options so Android revokes unused authorizations after 7 days. To revoke access completely, also remove the computer under "Wireless debugging > Paired devices" on the phone.
 
-Details stehen in [`plugins/screenmirror/README`](plugins/screenmirror/README).
+Details are in [`plugins/screenmirror/README`](plugins/screenmirror/README).
 
-## Fehlersuche
+## Troubleshooting
 
-- **„Das Gerät wurde nicht gefunden“:** Debugging über WLAN ist auf dem Handy aus, oder Handy und PC sind in verschiedenen Netzen. Manche Router blockieren mDNS zwischen WLAN und LAN.
-- **„Das Gerät bietet keine Kopplung an“:** Auf dem Handy muss der Dialog „Gerät über Kopplungscode koppeln“ geöffnet sein, solange auf „Koppeln“ geklickt wird. Alternativ den angezeigten Port von Hand eintragen.
-- **„Das Gerät hat die Verbindung abgelehnt“:** Kopplung entfernen und neu koppeln.
-- Ausführliches Log:
+- **"The device could not be found":** wireless debugging is off on the phone, or phone and computer are on different networks. Some routers block mDNS between Wi-Fi and LAN.
+- **"The device does not offer pairing":** the "Pair device with pairing code" dialog must be open on the phone while you click "Pair". Alternatively enter the port shown there manually.
+- **"The device did not accept the connection":** forget the pairing and pair again.
+- Verbose log:
   ```sh
   QT_LOGGING_RULES="kdeconnect.plugin.screenmirror.debug=true" kdeconnectd
   ```
 
-## Aufbau des Patches
+## What the fork changes
 
-| Pfad | Inhalt |
+| Path | Content |
 |---|---|
-| `plugins/screenmirror/` | Plugin, adb/scrcpy-Steuerung (`adbsession`), Hilfsfunktionen (`adbtools`), Einstellungsseite |
-| `dbusinterfaces/`, `declarativeplugin/` | D-Bus- und QML-Anbindung |
-| `app/qml/DevicePage.qml` | Aktion „Bildschirm spiegeln“ in der App |
-| `plasmoid/package/contents/ui/` | Schalter im Plasma-Applet |
-| `tests/screenmirror*` | Tests mit simuliertem adb und scrcpy |
-| `po/de/` | Deutsche Übersetzungen |
+| `plugins/screenmirror/` | Plugin, adb/scrcpy control (`adbsession`), helpers (`adbtools`), settings page |
+| `dbusinterfaces/`, `declarativeplugin/` | D-Bus and QML bindings |
+| `app/qml/DevicePage.qml` | "Mirror screen" action in the app |
+| `plasmoid/package/contents/ui/` | Toggle in the Plasma applet |
+| `tests/screenmirror*` | Tests with fake adb and scrcpy |
+| `po/de/` | German translations of the new strings |
 
 ## Upstream
 
-Das Original wird auf [invent.kde.org](https://invent.kde.org/network/kdeconnect-kde) entwickelt. Dieser Fork ist kein offizieller Teil von KDE Connect; Fehler im Plugin bitte hier melden, nicht bei KDE.
+KDE Connect is developed on [invent.kde.org](https://invent.kde.org/network/kdeconnect-kde). This fork is not an official part of KDE Connect; please report problems with the plugin here, not to KDE.
 
-## Lizenz
+## License
 
-[GNU GPL v2](https://www.gnu.org/licenses/gpl-2.0.html) und [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html), wie das Original.
+[GNU GPL v2](https://www.gnu.org/licenses/gpl-2.0.html) and [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html), like upstream.
