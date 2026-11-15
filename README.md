@@ -4,8 +4,6 @@ Dieser Fork von [KDE Connect](https://invent.kde.org/network/kdeconnect-kde) (De
 
 Alle anderen Funktionen entsprechen dem Original. Auf dem Handy wird die normale KDE-Connect-App aus [F-Droid](https://f-droid.org/packages/org.kde.kdeconnect_tp/) oder dem [Play Store](https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp) benutzt, sie muss nicht verändert werden.
 
-Die Änderungen liegen auf dem Branch `screenmirror`.
-
 ## Voraussetzungen
 
 - Android 11 oder neuer (Ton ebenfalls ab Android 11), mit eingeschalteten Entwickleroptionen
@@ -21,7 +19,7 @@ Die Änderungen liegen auf dem Branch `screenmirror`.
 Benötigt Qt ab 6.9 und KDE Frameworks 6 samt Entwicklungspaketen.
 
 ```sh
-git clone -b screenmirror https://github.com/Pauls-Slop/kdeconnect-kde.git
+git clone https://github.com/Pauls-Slop/kdeconnect-kde.git
 cmake -S kdeconnect-kde -B build -DCMAKE_INSTALL_PREFIX=/usr
 cmake --build build
 sudo cmake --install build
@@ -32,7 +30,7 @@ Die eigenen Tests laufen mit `ctest --test-dir build -R screenmirror`.
 
 ### Windows
 
-Mit [KDE Craft](https://community.kde.org/Craft) bauen und dabei die Quellen auf diesen Fork und den Branch `screenmirror` umstellen. Der Windows-Build ist bisher ungetestet.
+Mit [KDE Craft](https://community.kde.org/Craft) bauen und dabei die Quellen auf diesen Fork umstellen. Der Windows-Build ist bisher ungetestet.
 
 ## Benutzung
 
