@@ -1,0 +1,104 @@
+# SPDX-FileCopyrightText: None
+# SPDX-License-Identifier: CC0-1.0
+#
+# Builds a Windows installer (NSIS) of this fork with KDE Craft and MSVC 2022.
+# Pushing a tag starting with "v" publishes the installer as a GitHub release;
+# a manual run only uploads it as a workflow artifact.
+
+name: Windows release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CRAFT_ROOT: C:\CraftRoot
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 300
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # Craft's binary cache downloads (Qt, KDE Frameworks, tools). Restoring them
+      # avoids most of the download time; Craft still verifies every archive.
+      - name: Restore Craft downloads
+        uses: actions/cache@v4
+        with:
+          path: C:\CraftRoot\download
+          key: craft-download-msvc2022-${{ github.run_id }}
+          restore-keys: craft-download-msvc2022-
+
+      - name: Bootstrap Craft
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $boot = Join-Path $env:RUNNER_TEMP 'craftboot'
+          New-Item -ItemType Directory -Force $boot | Out-Null
+          Invoke-WebRequest https://raw.githubusercontent.com/KDE/craft/master/setup/CraftBootstrap.py -OutFile "$boot\CraftBootstrap.py"
+          # Defaults: MSVC 2022, x86_64, short path C:\_.
+          # The bootstrap refuses a non-empty prefix, except for the download folder.
+          python "$boot\CraftBootstrap.py" --prefix $env:CRAFT_ROOT --use-defaults
+          if ($LASTEXITCODE -ne 0) { throw "Craft bootstrap failed ($LASTEXITCODE)" }
+
+      - name: Use this checkout as kdeconnect-kde source
+        run: |
+          $settings = Join-Path $env:CRAFT_ROOT 'etc\BlueprintSettings.ini'
+          Add-Content -Path $settings -Encoding utf8 -Value @(
+            '',
+            '[kde/applications/kdeconnect-kde]',
+            "srcDir = $env:GITHUB_WORKSPACE"
+          )
+          Get-Content $settings -Tail 3
+
+      - name: Install NSIS
+        run: |
+          python "$env:CRAFT_ROOT\craft\bin\craft.py" nsis
+          if ($LASTEXITCODE -ne 0) { throw "craft nsis failed ($LASTEXITCODE)" }
+
+      - name: Build kdeconnect-kde
+        run: |
+          python "$env:CRAFT_ROOT\craft\bin\craft.py" kdeconnect-kde
+          if ($LASTEXITCODE -ne 0) { throw "craft kdeconnect-kde failed ($LASTEXITCODE)" }
+
+      - name: Package installer
+        run: |
+          python "$env:CRAFT_ROOT\craft\bin\craft.py" --package kdeconnect-kde
+          if ($LASTEXITCODE -ne 0) { throw "craft --package failed ($LASTEXITCODE)" }
+          Get-ChildItem "$env:CRAFT_ROOT\tmp" | Format-Table Name, Length
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kdeconnect-windows
+          path: |
+            C:\CraftRoot\tmp\*.exe
+            C:\CraftRoot\tmp\*.7z
+            C:\CraftRoot\tmp\*.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            C:/CraftRoot/tmp/*.exe
+            C:/CraftRoot/tmp/*.7z
+            C:/CraftRoot/tmp/*.sha256
+          fail_on_unmatched_files: false
+          generate_release_notes: true
