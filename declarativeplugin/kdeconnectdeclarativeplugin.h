@@ -141,6 +141,14 @@ class VirtualmonitorDbusInterfaceForeign
     QML_FOREIGN(VirtualmonitorDbusInterface)
 };
 
+class ScreenmirrorDbusInterfaceForeign
+{
+    Q_GADGET
+    QML_NAMED_ELEMENT(ScreenmirrorDbusInterface)
+    QML_UNCREATABLE("")
+    QML_FOREIGN(ScreenmirrorDbusInterface)
+};
+
 class SftpDbusInterfaceForeign
 {
     Q_GADGET
@@ -298,6 +306,18 @@ public:
     Q_INVOKABLE VirtualmonitorDbusInterface *create(const QString &deviceId)
     {
         return new VirtualmonitorDbusInterface(deviceId);
+    }
+};
+
+class ScreenmirrorDbusInterfaceFactory : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    Q_INVOKABLE ScreenmirrorDbusInterface *create(const QString &deviceId)
+    {
+        return new ScreenmirrorDbusInterface(deviceId);
     }
 };
 

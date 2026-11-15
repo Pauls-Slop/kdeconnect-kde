@@ -28,6 +28,23 @@ Kirigami.ScrollablePage {
         device: root.currentDevice
     }
 
+    readonly property ScreenmirrorDbusInterface screenMirror: ScreenmirrorDbusInterfaceFactory.create(root.currentDevice.id())
+    property bool screenMirrorRequested: false
+
+    // Errors of the screen mirroring plugin may happen after the request returned
+    Connections {
+        target: root.screenMirror
+        function onStateChangedProxy() {
+            if (!root.screenMirrorRequested || root.screenMirror.busy) {
+                return;
+            }
+            root.screenMirrorRequested = false;
+            if (!root.screenMirror.active && root.screenMirror.lastError.length > 0) {
+                showPassiveNotification(root.screenMirror.lastError);
+            }
+        }
+    }
+
     function openSettings()
     {
         for (let index = 0; index < pageStack.depth; ++index) {
@@ -254,6 +271,24 @@ Kirigami.ScrollablePage {
                         if (virtualMonitor.lastError.length > 0) {
                             showPassiveNotification(virtualMonitor.lastError)
                         }
+                    }
+                }
+                section: "action"
+                device: root.currentDevice
+            },
+            PluginItem {
+                pluginName: "screenmirror"
+                hidden: !root.screenMirror.available
+                name: root.screenMirror.active ? i18nd("kdeconnect-app", "Stop screen mirroring")
+                    : root.screenMirror.busy ? i18nd("kdeconnect-app", "Connecting to device...")
+                    : i18nd("kdeconnect-app", "Mirror screen")
+                onClick: () => {
+                    if (root.screenMirror.active || root.screenMirror.busy) {
+                        root.screenMirror.stop();
+                    } else if (root.screenMirror.startMirroring()) {
+                        root.screenMirrorRequested = true;
+                    } else {
+                        showPassiveNotification(root.screenMirror.lastError);
                     }
                 }
                 section: "action"

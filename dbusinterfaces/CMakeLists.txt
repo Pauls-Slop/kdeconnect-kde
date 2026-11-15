@@ -49,6 +49,7 @@ geninterface(${PROJECT_SOURCE_DIR}/plugins/sms/conversationsdbusinterface.h gene
 geninterface(${PROJECT_SOURCE_DIR}/plugins/share/shareplugin.h generated/shareinterface)
 geninterface(${PROJECT_SOURCE_DIR}/plugins/remotesystemvolume/remotesystemvolumeplugin.h generated/remotesystemvolumeinterface)
 geninterface(${PROJECT_SOURCE_DIR}/plugins/virtualmonitor/virtualmonitorplugin.h generated/virtualmonitorinterface)
+geninterface(${PROJECT_SOURCE_DIR}/plugins/screenmirror/screenmirrorplugin.h generated/screenmirrorinterface)
 geninterface(${PROJECT_SOURCE_DIR}/plugins/clipboard/clipboardplugin.h generated/deviceclipboardinterface)
 
 # System dbus interfaces

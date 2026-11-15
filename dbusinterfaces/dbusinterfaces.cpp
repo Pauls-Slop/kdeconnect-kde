@@ -190,6 +190,15 @@ VirtualmonitorDbusInterface::VirtualmonitorDbusInterface(const QString &deviceId
     connect(this, &OrgKdeKdeconnectDeviceVirtualmonitorInterface::activeChanged, this, &VirtualmonitorDbusInterface::activeChanged);
 }
 
+ScreenmirrorDbusInterface::ScreenmirrorDbusInterface(const QString &deviceId, QObject *parent)
+    : OrgKdeKdeconnectDeviceScreenmirrorInterface(DaemonDbusInterface::activatedService(),
+                                                  QLatin1String("/modules/kdeconnect/devices/%1/screenmirror").arg(deviceId),
+                                                  QDBusConnection::sessionBus(),
+                                                  parent)
+{
+    connect(this, &OrgKdeKdeconnectDeviceScreenmirrorInterface::stateChanged, this, &ScreenmirrorDbusInterface::stateChangedProxy);
+}
+
 ClipboardDbusInterface::ClipboardDbusInterface(const QString &deviceId, QObject *parent)
     : OrgKdeKdeconnectDeviceClipboardInterface(DaemonDbusInterface::activatedService(),
                                                QLatin1String("/modules/kdeconnect/devices/%1/clipboard").arg(deviceId),
